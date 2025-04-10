@@ -1,3 +1,674 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+
+    <meta name="application-name" content="Tachibk Viewer" />
+    <meta name="theme-color" content="#444444" />
+
+    <meta property="og:url" content="https://backup.mihon.tools" />
+    <meta name="twitter:url" content="https://backup.mihon.tools" />
+    <meta name="twitter:dnt" content="on" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Tachibk Viewer" />
+
+    <meta itemprop="name" content="Tachibk Viewer" />
+    <meta property="og:title" content="Tachibk Viewer" />
+    <meta property="og:image:alt" content="Tachibk Viewer" />
+    <meta name="twitter:title" content="Tachibk Viewer" />
+    <meta name="twitter:image:alt" content="Tachibk Viewer" />
+
+    <meta itemprop="description" content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side." />
+    <meta name="description" content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side." />
+    <meta
+      property="og:description"
+      content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side."
+    />
+    <meta
+      name="twitter:description"
+      content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side."
+    />
+
+    <meta itemprop="image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image:url" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image:secure_url" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta name="twitter:image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta name="twitter:image:src" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+
+    <meta name="twitter:card" content="summary" />
+
+    <title>Tachibk Viewer</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="img/icons/favicon-16x16.png" />
+    <link rel="icon" type="image/svg+xml" href="img/icons/favicon-vector.svg" />
+    <link rel="manifest" href="img/icons/site.webmanifest" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="preload"
+      as="style"
+      type="text/css"
+      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..400,1,0&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      type="text/css"
+      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..400,1,0&display=swap"
+      />
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    </noscript>
+    <script src="https://cdn.jsdelivr.net/npm/long@5.2.3/umd/index.min.js" crossorigin="anonymous" async></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"
+      integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      async
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/protobufjs/7.4.0/protobuf.min.js"
+      integrity="sha512-YkIMOpNvty00n18XVhKkktutdTvDgBFTKtlQpygsjF6eM8k7FliYYqWmhadNPzsICYJYxHMsSvCgDVunuFZ4Tg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      async
+    ></script>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="container">
+        <!-- Botão para extrair títulos -->
+        <button id="extract-titles-button">Extrair Todos os Títulos</button>
+      
+        <!-- Restante do seu conteúdo -->
+        <div id="search">
+          <!-- Conteúdo existente -->
+        </div>
+        <!-- ... -->
+      </div>
+      <!-- Search Icon + Field -->
+      <div id="search">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="search" name="search" placeholder='search "exact expression" -exclude' disabled />
+      </div>
+      <!-- Welcome / Load File Screen -->
+      <div id="load-modal" class="modal">
+        <div class="modal-content">
+          <span class="gh-logo">
+            <a href="https://github.com/Animeboynz/Mihon-Backup-Viewer" target="_blank" title="GitHub Project" alt="GitHub Icon">
+              <img src="img/github-mark-white.svg" type="image/svg+xml" height="24" width="24" alt="GitHub Icon" />
+            </a>
+          </span>
+          <h2>Load your .tachibk, .proto.gz or extracted .json file</h2>
+          <label for="fork-select"
+            >Backup from:
+            <select id="fork-select">
+              <option value="mihon">Mihon / Tachiyomi</option>
+              <option value="sy">TachiyomiSY</option>
+              <option value="j2k">TachiyomiJ2K</option>
+              <option value="yokai">Yōkai</option>
+            </select>
+          </label>
+          <input type="file" id="file-input" accept=".json,.tachibk,.proto.gz" />
+        </div>
+      </div>
+      <!-- Settings Icon -->
+      <div class="settings-icon" id="settings-icon"><span class="material-symbols-outlined">filter_list</span></div>
+      <!-- Categories Buttons -->
+      <div class="tabs" id="tabs">
+        <!-- Tabs will be generated here -->
+      </div>
+      <!-- Manga Entries -->
+      <div id="tab-contents">
+        <!-- Tab contents will be generated here -->
+      </div>
+    </div>
+
+    <!-- Entry's Kebab Menu -->
+    <div id="edit-menu" class="edit-menu">
+      <ul>
+        <li id="edit">Edit</li>
+        <!--<li id="tracking">Tracking</li>-->
+        <li id="delete">Delete</li>
+      </ul>
+    </div>
+
+    <!-- Manga Details Screen -->
+    <div id="manga-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-manga-modal" class="close-button"><span class="material-symbols-outlined">close</span></span>
+        <!-- Landscape View -->
+        <div class="manga-header landscape">
+          <img id="manga-thumbnail" src="" />
+          <div class="manga-meta">
+            <a id="manga-title-link" target="_blank"><h1 id="manga-title"></h1></a>
+            <div class="manga-details">
+              <ul id="manga-tracking"></ul>
+              <p id="manga-author"></p>
+              <p id="manga-artist"></p>
+              <p id="manga-status"></p>
+              <p id="manga-source"></p>
+            </div>
+            <ul id="manga-categories"></ul>
+          </div>
+        </div>
+        <!-- Portrait View -->
+        <div class="manga-header portrait">
+          <div class="manga-meta">
+            <a id="manga-title-link" target="_blank"><h1 id="manga-title"></h1></a>
+            <ul id="manga-tracking"></ul>
+            <img id="manga-thumbnail" src="" />
+            <div class="manga-details">
+              <p id="manga-author"></p>
+              <p id="manga-artist"></p>
+              <p id="manga-status"></p>
+              <p id="manga-source"></p>
+            </div>
+            <ul id="manga-categories"></ul>
+          </div>
+        </div>
+        <div class="manga-body">
+          <div id="manga-description-div">
+            <p id="manga-description"></p>
+            <span class="fade-out"><span class="material-symbols-outlined" id="description-expand-icon">keyboard_arrow_down</span></span>
+          </div>
+          <ul id="manga-genres"></ul>
+        </div>
+        <div id="chapter-filters-modal" class="modal">
+          <div class="modal-content">
+            <h2>Chapter Filters</h2>
+            <label><input type="checkbox" id="unread-chapter-filter" checked />Unread</label>
+            <label><input type="checkbox" id="read-chapter-filter" checked />Read</label>
+            <label>
+              Scanlators:<br />
+              <select id="scanlator-filter" multiple>
+                <option disabled="true">Any</option>
+                <!-- Dynamically populated -->
+              </select>
+            </label>
+            <button id="apply-chapter-filter">OK</button>
+            <button id="reset-chapter-filter">Reset</button>
+          </div>
+        </div>
+        <div id="chapter-buttons">
+          <span class="material-symbols-outlined" id="chapters-sort-button">swap_vert</span>
+          <span class="material-symbols-outlined" id="chapters-filter-button">filter_list</span>
+        </div>
+        <div id="manga-chapters"></div>
+      </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-modal" class="modal">
+      <div class="modal-content">
+        <span class="gh-logo">
+          <a href="https://github.com/Animeboynz/Mihon-Backup-Viewer" target="_blank" title="GitHub Project" alt="GitHub Icon">
+            <img src="img/github-mark-white.svg" type="image/svg+xml" height="24" width="24" alt="GitHub Icon" />
+          </a>
+        </span>
+        <span id="close-settings-modal" class="close-button"><span class="material-symbols-outlined">close</span></span>
+        <h2>Settings</h2>
+        <button id="load-backup" class="settings-button">Load Backup</button>
+        <div class="settings-inline">
+          <label for="sort-order">Sort Order</label>
+          <select id="sort-order">
+            <option value="0">Alphabetically</option>
+            <option value="16">Total Chapters</option>
+            <option value="4">Last Read</option>
+            <option value="8">Last Update Check</option>
+            <option value="12">Unread Count</option>
+            <option value="20">Latest Chapter</option>
+            <option value="24">Chapter Fetch Date</option>
+            <option value="28">Date Added</option>
+            <!-- <option value="32">Tracker Score</option> -->
+            <!-- <option value="36">Tag List</option> -->
+          </select>
+          <span class="sort-ascending"><input type="checkbox" id="sort-ascending" checked /><label for="sort-ascending">Ascending</label></span>
+        </div>
+        <div class="settings-inline">
+          <!-- <label for="highlight-tracker">Highlight Tracker</label>
+      <label class="switch">
+        <input type="checkbox" id="highlight-tracker" />
+        <span class="slider"></span>
+      </label> -->
+        </div>
+        <div class="settings-inline">
+          <label for="filter-status">Filter by Status</label>
+          <select multiple id="filter-status">
+            <option value="-1">All Statuses</option>
+            <option value="0">Unknown</option>
+            <option value="1">Ongoing</option>
+            <option value="2">Completed</option>
+            <option value="3">Licensed</option>
+            <option value="4">Publishing Finished</option>
+            <option value="5">Cancelled</option>
+            <option value="6">On Hiatus</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-source">Filter by Source</label>
+          <select multiple id="filter-source">
+            <!-- Sources will be loaded here -->
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-tracked">Filter by Tracking</label>
+          <select id="filter-tracked">
+            <option value="all-entries">All Entries</option>
+            <option value="tracked">Tracked</option>
+            <option value="untracked">Untracked</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-unread">Filter by Read Status</label>
+          <select id="filter-unread">
+            <option value="all-entries">All Entries</option>
+            <option value="unread">Unread</option>
+            <option value="read">Fully Read</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-bookmark">Filter by Bookmarks</label>
+          <select id="filter-bookmark">
+            <option value="all-entries">All Entries</option>
+            <option value="bookmarked">Bookmarked</option>
+            <option value="unbookmarked">No Bookmarks</option>
+          </select>
+        </div>
+        <div class="settings-buttons-container">
+          <button id="apply-settings" class="settings-button">Apply</button>
+          <label>Download Backup</label>
+          <span class="download-buttons">
+            <button id="download-json" class="settings-button">JSON</button>
+            <button id="download-tachibk" class="settings-button">.tachibk</button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div id="edit-details-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-edit-details-modal" class="close-button">&times;</span>
+        <h2>Edit Details</h2>
+
+        <div class="fork-only">
+          <label for="custom-title">Title:</label>
+          <input type="text" id="custom-title" name="custom-title" class="edit-input" />
+        </div>
+        <div class="fork-only">
+          <label for="custom-artist">Artist:</label>
+          <input type="text" id="custom-artist" name="custom-artist" class="edit-input" />
+        </div>
+        <div class="fork-only">
+          <label for="custom-author">Author:</label>
+          <input type="text" id="custom-author" name="custom-author" class="edit-input" />
+        </div>
+        <div class="fork-only">
+          <label for="custom-thumbnail">Thumbnail URL:</label>
+          <input type="text" id="custom-thumbnail" name="custom-thumbnail" class="edit-input" />
+        </div>
+        <div class="fork-only">
+          <label for="custom-desc">Description:</label>
+          <textarea id="custom-desc" name="custom-desc" class="edit-input"></textarea>
+        </div>
+        <div class="fork-only">
+          <label for="custom-genre">Genres:</label>
+          <textarea id="custom-genre" name="custom-genre" class="edit-input"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="date-added">Date Added:</label>
+          <input type="datetime-local" id="date-added" name="date-added" class="edit-input" />
+        </div>
+        <div class="form-group">
+          <label for="edit-category-options">Categories:</label>
+          <select multiple id="edit-category-options" class="edit-input">
+            <!-- Generated -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="last-modified">Last Modified At:</label>
+          <input type="datetime-local" id="last-modified" name="last-modified" class="edit-input" />
+        </div>
+        <div class="form-group">
+          <label for="favorite-modified">Favorite Modified At:</label>
+          <input type="datetime-local" id="favorite-modified"<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="no-referrer" />
+
+    <meta name="application-name" content="Tachibk Viewer" />
+    <meta name="theme-color" content="#444444" />
+
+    <meta property="og:url" content="https://backup.mihon.tools" />
+    <meta name="twitter:url" content="https://backup.mihon.tools" />
+    <meta name="twitter:dnt" content="on" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Tachibk Viewer" />
+
+    <meta itemprop="name" content="Tachibk Viewer" />
+    <meta property="og:title" content="Tachibk Viewer" />
+    <meta property="og:image:alt" content="Tachibk Viewer" />
+    <meta name="twitter:title" content="Tachibk Viewer" />
+    <meta name="twitter:image:alt" content="Tachibk Viewer" />
+
+    <meta itemprop="description" content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side." />
+    <meta name="description" content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side." />
+    <meta
+      property="og:description"
+      content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side."
+    />
+    <meta
+      name="twitter:description"
+      content="A web-based viewer for your `tachibk` backup files from Tachiyomi and compatible forks, all client-side."
+    />
+
+    <meta itemprop="image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image:url" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta property="og:image:secure_url" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta name="twitter:image" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+    <meta name="twitter:image:src" content="https://backup.mihon.tools/img/icons/android-chrome-512x512.png" />
+
+    <meta name="twitter:card" content="summary" />
+
+    <title>Tachibk Viewer</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="img/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="img/icons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="img/icons/favicon-16x16.png" />
+    <link rel="icon" type="image/svg+xml" href="img/icons/favicon-vector.svg" />
+    <link rel="manifest" href="img/icons/site.webmanifest" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="preload"
+      as="style"
+      type="text/css"
+      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..400,1,0&display=swap"
+    />
+    <link
+      rel="preload"
+      as="style"
+      type="text/css"
+      onload="this.onload=null;this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        type="text/css"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..400,1,0&display=swap"
+      />
+      <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+    </noscript>
+    <script src="https://cdn.jsdelivr.net/npm/long@5.2.3/umd/index.min.js" crossorigin="anonymous" async></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"
+      integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      async
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/protobufjs/7.4.0/protobuf.min.js"
+      integrity="sha512-YkIMOpNvty00n18XVhKkktutdTvDgBFTKtlQpygsjF6eM8k7FliYYqWmhadNPzsICYJYxHMsSvCgDVunuFZ4Tg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      async
+    ></script>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="container">
+        <!-- Botão para extrair títulos -->
+        <button id="extract-titles-button">Extrair Todos os Títulos</button>
+      
+        <!-- Restante do seu conteúdo -->
+        <div id="search">
+          <!-- Conteúdo existente -->
+        </div>
+        <!-- ... -->
+      </div>
+      <!-- Search Icon + Field -->
+      <div id="search">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="search" name="search" placeholder='search "exact expression" -exclude' disabled />
+      </div>
+      <!-- Welcome / Load File Screen -->
+      <div id="load-modal" class="modal">
+        <div class="modal-content">
+          <span class="gh-logo">
+            <a href="https://github.com/Animeboynz/Mihon-Backup-Viewer" target="_blank" title="GitHub Project" alt="GitHub Icon">
+              <img src="img/github-mark-white.svg" type="image/svg+xml" height="24" width="24" alt="GitHub Icon" />
+            </a>
+          </span>
+          <h2>Load your .tachibk, .proto.gz or extracted .json file</h2>
+          <label for="fork-select"
+            >Backup from:
+            <select id="fork-select">
+              <option value="mihon">Mihon / Tachiyomi</option>
+              <option value="sy">TachiyomiSY</option>
+              <option value="j2k">TachiyomiJ2K</option>
+              <option value="yokai">Yōkai</option>
+            </select>
+          </label>
+          <input type="file" id="file-input" accept=".json,.tachibk,.proto.gz" />
+        </div>
+      </div>
+      <!-- Settings Icon -->
+      <div class="settings-icon" id="settings-icon"><span class="material-symbols-outlined">filter_list</span></div>
+      <!-- Categories Buttons -->
+      <div class="tabs" id="tabs">
+        <!-- Tabs will be generated here -->
+      </div>
+      <!-- Manga Entries -->
+      <div id="tab-contents">
+        <!-- Tab contents will be generated here -->
+      </div>
+    </div>
+
+    <!-- Entry's Kebab Menu -->
+    <div id="edit-menu" class="edit-menu">
+      <ul>
+        <li id="edit">Edit</li>
+        <!--<li id="tracking">Tracking</li>-->
+        <li id="delete">Delete</li>
+      </ul>
+    </div>
+
+    <!-- Manga Details Screen -->
+    <div id="manga-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-manga-modal" class="close-button"><span class="material-symbols-outlined">close</span></span>
+        <!-- Landscape View -->
+        <div class="manga-header landscape">
+          <img id="manga-thumbnail" src="" />
+          <div class="manga-meta">
+            <a id="manga-title-link" target="_blank"><h1 id="manga-title"></h1></a>
+            <div class="manga-details">
+              <ul id="manga-tracking"></ul>
+              <p id="manga-author"></p>
+              <p id="manga-artist"></p>
+              <p id="manga-status"></p>
+              <p id="manga-source"></p>
+            </div>
+            <ul id="manga-categories"></ul>
+          </div>
+        </div>
+        <!-- Portrait View -->
+        <div class="manga-header portrait">
+          <div class="manga-meta">
+            <a id="manga-title-link" target="_blank"><h1 id="manga-title"></h1></a>
+            <ul id="manga-tracking"></ul>
+            <img id="manga-thumbnail" src="" />
+            <div class="manga-details">
+              <p id="manga-author"></p>
+              <p id="manga-artist"></p>
+              <p id="manga-status"></p>
+              <p id="manga-source"></p>
+            </div>
+            <ul id="manga-categories"></ul>
+          </div>
+        </div>
+        <div class="manga-body">
+          <div id="manga-description-div">
+            <p id="manga-description"></p>
+            <span class="fade-out"><span class="material-symbols-outlined" id="description-expand-icon">keyboard_arrow_down</span></span>
+          </div>
+          <ul id="manga-genres"></ul>
+        </div>
+        <div id="chapter-filters-modal" class="modal">
+          <div class="modal-content">
+            <h2>Chapter Filters</h2>
+            <label><input type="checkbox" id="unread-chapter-filter" checked />Unread</label>
+            <label><input type="checkbox" id="read-chapter-filter" checked />Read</label>
+            <label>
+              Scanlators:<br />
+              <select id="scanlator-filter" multiple>
+                <option disabled="true">Any</option>
+                <!-- Dynamically populated -->
+              </select>
+            </label>
+            <button id="apply-chapter-filter">OK</button>
+            <button id="reset-chapter-filter">Reset</button>
+          </div>
+        </div>
+        <div id="chapter-buttons">
+          <span class="material-symbols-outlined" id="chapters-sort-button">swap_vert</span>
+          <span class="material-symbols-outlined" id="chapters-filter-button">filter_list</span>
+        </div>
+        <div id="manga-chapters"></div>
+      </div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-modal" class="modal">
+      <div class="modal-content">
+        <span class="gh-logo">
+          <a href="https://github.com/Animeboynz/Mihon-Backup-Viewer" target="_blank" title="GitHub Project" alt="GitHub Icon">
+            <img src="img/github-mark-white.svg" type="image/svg+xml" height="24" width="24" alt="GitHub Icon" />
+          </a>
+        </span>
+        <span id="close-settings-modal" class="close-button"><span class="material-symbols-outlined">close</span></span>
+        <h2>Settings</h2>
+        <button id="load-backup" class="settings-button">Load Backup</button>
+        <div class="settings-inline">
+          <label for="sort-order">Sort Order</label>
+          <select id="sort-order">
+            <option value="0">Alphabetically</option>
+            <option value="16">Total Chapters</option>
+            <option value="4">Last Read</option>
+            <option value="8">Last Update Check</option>
+            <option value="12">Unread Count</option>
+            <option value="20">Latest Chapter</option>
+            <option value="24">Chapter Fetch Date</option>
+            <option value="28">Date Added</option>
+            <!-- <option value="32">Tracker Score</option> -->
+            <!-- <option value="36">Tag List</option> -->
+          </select>
+          <span class="sort-ascending"><input type="checkbox" id="sort-ascending" checked /><label for="sort-ascending">Ascending</label></span>
+        </div>
+        <div class="settings-inline">
+          <!-- <label for="highlight-tracker">Highlight Tracker</label>
+      <label class="switch">
+        <input type="checkbox" id="highlight-tracker" />
+        <span class="slider"></span>
+      </label> -->
+        </div>
+        <div class="settings-inline">
+          <label for="filter-status">Filter by Status</label>
+          <select multiple id="filter-status">
+            <option value="-1">All Statuses</option>
+            <option value="0">Unknown</option>
+            <option value="1">Ongoing</option>
+            <option value="2">Completed</option>
+            <option value="3">Licensed</option>
+            <option value="4">Publishing Finished</option>
+            <option value="5">Cancelled</option>
+            <option value="6">On Hiatus</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-source">Filter by Source</label>
+          <select multiple id="filter-source">
+            <!-- Sources will be loaded here -->
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-tracked">Filter by Tracking</label>
+          <select id="filter-tracked">
+            <option value="all-entries">All Entries</option>
+            <option value="tracked">Tracked</option>
+            <option value="untracked">Untracked</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-unread">Filter by Read Status</label>
+          <select id="filter-unread">
+            <option value="all-entries">All Entries</option>
+            <option value="unread">Unread</option>
+            <option value="read">Fully Read</option>
+          </select>
+        </div>
+        <div class="settings-inline">
+          <label for="filter-bookmark">Filter by Bookmarks</label>
+          <select id="filter-bookmark">
+            <option value="all-entries">All Entries</option>
+            <option value="bookmarked">Bookmarked</option>
+            <option value="unbookmarked">No Bookmarks</option>
+          </select>
+        </div>
+        <div class="settings-buttons-container">
+          <button id="apply-settings" class="settings-button">Apply</button>
+          <label>Download Backup</label>
+          <span class="download-buttons">
+            <button id="download-json" class="settings-button">JSON</button>
+            <button id="download-tachibk" class="settings-button">.tachibk</button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div id="edit-details-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-edit-details-modal" class="close-button">&times;</span>
+        <h2>Edit Details</h2>
+
+        <div class="fork-only">
+          <label for="custom-title">Title:</label>
+          <input type="text" id="custom-title" name="custom-title" class="edit-input" />
+        </div>
+        <div class="fork-only">
+          <label for="custom-artist">Artist:</label>
+          <input type="text" id="custom-artist" name="custom-artist" class="edit-input" />
+        </div>
         <div class="fork-only">
           <label for="custom-author">Author:</label>
           <input type="text" id="custom-author" name="custom-author" class="edit-input" />
